@@ -16,6 +16,8 @@ return new class extends Migration
             $table->string('name');
             $table->string('unique_id', 3)->unique();
             $table->string('image')->nullable();
+             $table->string('emoji', 10)->nullable();   
+              $table->enum('gender', ['all', 'men', 'women', 'kids'])->default('all'); // ✅ Added
             $table->timestamps();
         });
     }

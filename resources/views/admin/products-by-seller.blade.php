@@ -16,67 +16,116 @@
             background-color: #f4f6f9;
         }
 
-        .sidebar {
-            position: fixed;
-            top: 0;
-            bottom: 0;
-            left: 0;
-            width: 230px;
-            background: #212529;
-            color: #fff;
-            display: flex;
-            flex-direction: column;
-            transition: all 0.3s ease-in-out;
-            z-index: 1000;
-        }
+       /* ===== OLD-STYLE SIDEBAR (FLAT DARK) ===== */
+.sidebar {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 250px;
+    background-color: #1e1e2f;
+    color: #fff;
+    padding-top: 20px;
+    z-index: 1000;
+    box-shadow: 3px 0 10px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+    overflow: hidden;
+    height: 100vh;
+}
 
-        @media (max-width: 768px) {
-            .sidebar {
-                left: -230px;
-            }
+@media (max-width: 768px) {
+    .sidebar {
+        left: -250px;
+    }
+    .sidebar.show {
+        left: 0;
+    }
+}
 
-            .sidebar.show {
-                left: 0;
-            }
-        }
+.sidebar .logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 10px;
+    border-radius: 6px;
+    width: 100%;
+    box-sizing: border-box;
+    height: 100px;
+    
+}
 
-        .sidebar .logo {
-            position: sticky;
-            top: 0;
-            width: 100%;
-            text-align: center;
-            padding-bottom: 70px;
-            background: #212529;
-            z-index: 1100;
-            height: 20px;
-        }
+.sidebar .logo img {
+    width: 150px;
+    height: 200px;
+    object-fit: cover;
+    position: relative;
+    left: 30px;
+    transition: transform 0.2s;
+}
 
-        .sidebar .logo img {
-            margin-top: 20px;
-            transition: transform 0.2s;
-        }
+.sidebar-content {
+    overflow-y: auto;
+    overflow-x: hidden;
+    height: calc(100vh - 180px);
+    padding-bottom: 20px;
+    padding-left: 15px;
+    padding-right: 15px;
+    margin-top: 50px;
+}
 
-        .sidebar .logo img:hover {
-            transform: scale(1.05);
-        }
+.sidebar-content::-webkit-scrollbar {
+    width: 6px;
+}
+.sidebar-content::-webkit-scrollbar-track {
+    background: #2d2d40;
+    border-radius: 10px;
+}
+.sidebar-content::-webkit-scrollbar-thumb {
+    background: #555;
+    border-radius: 10px;
+}
+.sidebar-content::-webkit-scrollbar-thumb:hover {
+    background: #777;
+}
 
-        .sidebar .nav-link {
-            color: #adb5bd;
-            margin: 6px 0;
-            border-radius: 6px;
-            padding: 10px 15px;
-        }
+.sidebar .nav-link {
+    color: #bdc3c7;
+    margin: 8px 15px;
+    padding: 12px 20px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.2s;
+}
 
-        .sidebar .nav-link.active,
-        .sidebar .nav-link:hover {
-            background: #0d6efd;
-            color: #fff;
-        }
+.sidebar .nav-link:hover,
+.sidebar .nav-link.active {
+    background-color: #2d2d40;
+    color: #fff;
+}
 
-        .sidebar .nav-link i {
-            margin-right: 8px;
-        }
+.sidebar .nav-link.active {
+    background-color: #007bff;
+    color: white;
+    border-left: 4px solid #0056b3;
+}
 
+.sidebar .nav-link i {
+    font-size: 18px;
+    width: 24px;
+    text-align: center;
+}
+
+.sidebar .nav-link.text-danger {
+    color: #ff6b6b;
+}
+.sidebar .nav-link.text-danger:hover {
+    color: #ff4757;
+    background-color: #2d2d40;
+}
         .content {
             margin-left: 230px;
             padding: 20px;
@@ -162,48 +211,43 @@
 <body>
 
     {{-- Sidebar --}}
-    <div class="sidebar" id="sidebar">
-        <div class="logo">
-            <a href="{{ route('admin.dashboard') }}">
-                <img src="{{ asset('asset/images/grabbasket.png') }}" alt="GrabBasket" width="150">
-            </a>
-        </div>
-        <nav class="nav flex-column px-3" style="margin-top: 20px; overflow-y: auto; flex: 1;">
-            <a href="{{ route('admin.dashboard') }}" class="nav-link">
-                <i class="bi bi-speedometer2"></i> Dashboard
-            </a>
-            <a href="{{ route('admin.manageuser') }}" class="nav-link">
-                <i class="bi bi-people"></i> Manage Users
-            </a>
-            <a href="{{ route('admin.orders') }}" class="nav-link">
-                <i class="bi bi-cart-check"></i> Orders
-            </a>
-            <a href="{{ route('admin.products') }}" class="nav-link">
-                <i class="bi bi-box-seam"></i> All Products
-            </a>
-            <a href="{{ route('admin.products.bySeller') }}" class="nav-link active">
-                <i class="bi bi-shop"></i> Products by Seller
-            </a>
-            <a href="{{ route('admin.bulkProductUpload') }}" class="nav-link">
-                <i class="bi bi-upload"></i> Bulk Upload
-            </a>
-            <a href="{{ route('admin.banners.index') }}" class="nav-link">
-                <i class="bi bi-images"></i> Banner Management
-            </a>
-            <a href="{{ route('admin.index-editor.index') }}" class="nav-link">
-                <i class="bi bi-pencil-square"></i> Index Editor
-            </a>
-            <a href="{{ route('admin.category-emojis.index') }}" class="nav-link">
-                <i class="bi bi-emoji-smile"></i> Category Emojis
-            </a>
-            <a href="{{ route('admin.logout') }}" class="nav-link text-danger">
-                <i class="bi bi-box-arrow-right"></i> Logout
-            </a>
-        </nav>
+    <div class="menu-toggle d-md-none">
+        <i class="bi bi-list"></i>
     </div>
-
-    {{-- Menu Toggle for Mobile --}}
-    <i class="bi bi-list menu-toggle" id="menuToggle"></i>
+    <div class="sidebar" id="sidebarMenu">
+        <div class="sidebar-header">
+            <div class="logo">
+                <img src="{{ asset('asset/images/grabbasket.png') }}" alt="Logo" width="150px">
+            </div>
+        </div>
+        {{-- Sidebar --}}
+<div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+        <div class="logo">
+            <img src="{{ asset('asset/images/grabbasket.png') }}" alt="Logo" width="150px">
+        </div>
+    </div>
+    <div class="sidebar-content">
+        <ul class="nav nav-pills flex-column">
+            <li><a class="nav-link" href="{{ route('admin.dashboard') }}"><i class="bi bi-speedometer2"></i> Dashboard</a></li>
+            <li><a class="nav-link" href="{{ route('admin.products') }}"><i class="bi bi-box-seam"></i> Products</a></li>
+            <li><a class="nav-link" href="{{ route('admin.orders') }}"><i class="bi bi-cart-check"></i> Orders</a></li>
+            <li><a class="nav-link" href="{{ route('tracking.form') }}"><i class="bi bi-truck"></i> Track Package</a></li>
+            <li><a class="nav-link" href="{{ route('admin.manageuser') }}"><i class="bi bi-people"></i> Users</a></li>
+            <li><a class="nav-link" href="{{ route('admin.banners.index') }}"><i class="bi bi-images"></i> Banner Management</a></li>
+            <li><a class="nav-link" href="{{ route('admin.index-editor.index') }}"><i class="bi bi-house-gear-fill"></i> Index Page Editor</a></li>
+            <li><a class="nav-link" href="{{ route('admin.category-emojis.index') }}"><i class="bi bi-emoji-smile-fill"></i> Category Emojis</a></li>
+            <li><a class="nav-link" href="{{ route('admin.promotional.form') }}"><i class="bi bi-bell-fill"></i> Promotional Notifications</a></li>
+            <li><a class="nav-link" href="{{ route('admin.sms.dashboard') }}"><i class="bi bi-chat-dots"></i> SMS Management</a></li>
+            <li><a class="nav-link" href="{{ route('admin.bulkProductUpload') }}"><i class="bi bi-upload"></i> Bulk Product Upload</a></li>
+            <li><a class="nav-link" href="{{ route('admin.warehouse.dashboard') }}"><i class="bi bi-shop"></i> Warehouse Management</a></li>
+            <li><a class="nav-link" href="{{ route('admin.delivery-partners.dashboard') }}"><i class="bi bi-bicycle"></i> Delivery Partners</a></li>
+            <li><a class="nav-link active" href="{{ route('admin.products.bySeller') }}"><i class="bi bi-shop"></i> Products by Seller</a></li>
+            <li><a class="nav-link text-danger" href="{{ route('admin.logout') }}"><i class="bi bi-box-arrow-right"></i> Logout</a></li>
+        </ul>
+    </div>
+</div>
+    </div>
 
     {{-- Main Content --}}
     <div class="content">

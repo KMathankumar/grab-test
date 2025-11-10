@@ -355,6 +355,7 @@
                     <li><a class="nav-link" href="{{ route('admin.bulkProductUpload') }}"><i class="bi bi-upload"></i> Bulk Product Upload</a></li>
                     <li><a class="nav-link" href="{{ route('admin.warehouse.dashboard') }}"><i class="bi bi-shop"></i> Warehouse Management</a></li>
                     <li><a class="nav-link" href="{{ route('admin.delivery-partners.dashboard') }}"><i class="bi bi-bicycle"></i> Delivery Partners</a></li>
+                    <li><a class="nav-link" href="{{ route('admin.products.bySeller') }}"><i class="bi bi-shop"></i> Products by Seller</a></li> <!-- 👈 NEW LINK -->
                     <li><a class="nav-link text-danger" href="{{ route('admin.logout') }}">
                             <i class="bi bi-box-arrow-right"></i> Logout</a>
                     </li>
