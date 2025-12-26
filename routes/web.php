@@ -29,6 +29,7 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\InternshipController;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\TenMinsOrderController;
 
 // Test image upload route
 #use Illuminate\Http\Request;
@@ -1855,28 +1856,80 @@ Route::get('/about', function () {
 // SEO Routes
 Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
 
+
+  // 10-minute grocery routes
 Route::get('/ten-min-products', [SellerController::class, 'showTenMinProducts'])->name('ten.min.products');
+Route::get('/product/{id}', [SellerController::class, 'show'])->name('product.details'); // ✅ Renamed!
+Route::get('/api/product/{id}', [SellerController::class, 'getProductDetails']);
+// In routes/web.php
+
+// Add to cart
+Route::post('/ten-min/cart/add', [SellerController::class, 'tenMinCartAdd'])->name('tenmin.cart.add');
+
+// View cart
+Route::get('/ten-min/cart', [SellerController::class, 'tenMinCartView'])
+    ->name('tenmin.cart.view');
+// Update cart item
+Route::post('/ten-min/cart/update', [SellerController::class, 'tenMinCartUpdate'])->name('tenmin.cart.update');
+ //TEN MINS ORDER ROUTE
+Route::prefix('seller')
+    ->name('seller.')
+    ->middleware(['auth', 'verified'])
+    ->group(function () {
+        Route::get('/10-mins-orders', [TenMinsOrderController::class, 'index'])->name('tenmins.orders');
+        Route::get('/10-mins-orders/{id}', [TenMinsOrderController::class, 'show'])->name('tenmins.orders.show');
+        Route::post('/10-mins-orders/{id}/update-status', [TenMinsOrderController::class, 'updateStatus'])->name('tenmins.orders.update');
+    });
+// Inside your seller group
+Route::post('/10-mins-orders/{id}/update-status', [TenMinsOrderController::class, 'updateStatus'])
+    ->name('tenmins.orders.update');
+ 
+ 
+// REMOVE THIS LINE → Route::post('/ten-min/cart/remove', [SellerController::class, 'tenMinCartRemove']);
+// ADD THIS INSTEAD →
+Route::post('/ten-min/cart/remove', [SellerController::class, 'tenMinCartRemove'])->name('tenmin.cart.remove');
+
+    
+// ... other routes ...
+
+// In routes/web.php
+Route::get('/ten-min-checkout', [SellerController::class, 'tenMinCheckout'])
+    ->name('tenmin.checkout')
+    ->middleware('auth');
+    
+Route::get('/ten-min-order/success/{orderId}', [SellerController::class, 'tenMinOrderSuccess'])
+    ->name('tenmin.order.success');
+
+// ✅ FIXED: Complete, valid route
+Route::post('/ten-min/order/place', [SellerController::class, 'placeTenMinGroceryOrder'])
+    ->name('tenmin.grocery.order.place')
+    ->middleware('auth');
 
 
+
+    
 use App\Http\Controllers\Customer\CustomerFoodController;
 
 Route::prefix('food')->group(function () {
     // Public routes
     Route::get('/customer', [CustomerFoodController::class, 'index'])->name('customer.food.index');
-
-
-    Route::get('/customer/details/{id}', [CustomerFoodController::class, 'details'])
-        ->name('customer.food.details');
+    Route::get('/customer/details/{id}', [CustomerFoodController::class, 'details'])->name('customer.food.details');
+    Route::get('/category/{category}', [CustomerFoodController::class, 'category'])->name('customer.food.category');
+    
+    // AJAX route for filtering
+    Route::get('/ajax-index', [CustomerFoodController::class, 'ajaxIndex'])->name('customer.food.ajax.index');
+    
     // Protected cart routes
     Route::middleware('auth')->group(function () {
         Route::get('/cart', [CustomerFoodController::class, 'cartIndex'])->name('customer.food.cart');
-        Route::post('/cart/add', [CustomerFoodController::class, 'cartAdd'])->name('customer.food.cart.add'); // <-- ADD THIS
-        Route::post('/cart/update/{foodId}', [CustomerFoodController::class, 'cartUpdate'])
-            ->name('customer.food.cart.update');
+        Route::post('/cart/add', [CustomerFoodController::class, 'cartAdd'])->name('customer.food.cart.add');
+        Route::post('/cart/update/{foodId}', [CustomerFoodController::class, 'cartUpdate'])->name('customer.food.cart.update');
         Route::get('/cart/remove/{foodId}', [CustomerFoodController::class, 'cartRemove'])->name('customer.food.cart.remove');
+        
+        // Checkout routes - CORRECTED FOR MULTI-SELLER
         Route::get('/checkout', [CustomerFoodController::class, 'showCheckout'])->name('customer.food.checkout');
         Route::post('/checkout/place', [CustomerFoodController::class, 'placeOrder'])->name('customer.food.checkout.place');
-        Route::get('/order/success/{orderId}', [CustomerFoodController::class, 'orderSuccess'])->name('customer.food.order.success');
+        Route::get('/order/success', [CustomerFoodController::class, 'orderSuccess'])->name('customer.food.order.success'); // REMOVED {orderId}
     });
 });
 

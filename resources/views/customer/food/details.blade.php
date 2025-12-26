@@ -35,7 +35,7 @@ body{ font-family:"Poppins",sans-serif; background:#f5f4f7; margin:0; }
 <body>
 
 <div class="nav-app">
-<a href="{{ route('customer.food.index') }}" class="brand text-decoration-none">GrabBasket</a>
+<a href="{{ route('customer.food.index') }}" class="brand text-decoration-none">GrabBaskets</a>
   <button onclick="window.history.back()" class="btn btn-outline-secondary">Back</button>
 </div>
 
